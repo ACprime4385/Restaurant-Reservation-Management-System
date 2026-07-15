@@ -64,7 +64,9 @@ jobs:
       mongodb:
         image: mongo:7
         options: >-
-          --entrypoint "mongod --replSet rs0 --bind_ip_all"
+          --entrypoint mongod
+          --replSet rs0
+          --bind_ip_all
         ports:
           - 27017:27017
 
@@ -86,7 +88,13 @@ jobs:
 
       - name: Initialize MongoDB replica set
         run: |
-          sleep 5
+          echo "Waiting for MongoDB to start..."
+          for i in $(seq 1 15); do
+            docker exec $(docker ps -q) mongosh --quiet --eval 'db.runCommand({ping:1}).ok' 2>/dev/null && break
+            echo "Attempt $i - waiting..."
+            sleep 2
+          done
+          echo "Initializing replica set..."
           docker exec $(docker ps -q) mongosh --quiet --eval 'rs.initiate({_id:"rs0",members:[{_id:0,host:"localhost:27017"}]})'
           sleep 3
           echo "=== Replica set status ==="
