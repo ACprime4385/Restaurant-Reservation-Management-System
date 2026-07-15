@@ -57,12 +57,9 @@ jobs:
 
     services:
       # MongoDB with replica set (required for ACID transactions)
+      # MongoDB 7+ allows transitioning from standalone to replica set via rs.initiate()
       mongodb:
         image: mongo:7
-        options: >-
-          --entrypoint mongod
-          --replSet rs0
-          --bind_ip_all
         ports:
           - 27017:27017
 
@@ -118,13 +115,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18.x'
-          cache: 'npm'
 
-      - name: Install root dependencies
-        run: npm install
-
-      - name: Build server
+      - name: Install and build server
         run: |
+          npm install
           npm --prefix server install
           npm --prefix server run build
         continue-on-error: false
