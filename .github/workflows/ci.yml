@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-      - master
-    # Ignore documentation-only changes
     paths-ignore:
       - '**.md'
       - '.gitignore'
@@ -13,8 +11,6 @@ on:
   pull_request:
     branches:
       - main
-      - master
-    # Ignore documentation-only changes
     paths-ignore:
       - '**.md'
       - '.gitignore'
@@ -41,6 +37,12 @@ jobs:
       - name: Install root dependencies
         run: npm install
 
+      - name: Install server dependencies
+        run: npm --prefix server install
+
+      - name: Install client dependencies
+        run: npm --prefix client install
+
       - name: Lint server
         run: npm --prefix server run lint
         continue-on-error: false
@@ -55,17 +57,14 @@ jobs:
   test:
     runs-on: ubuntu-latest
     name: Test (Jest)
-    needs: lint  # Only run tests if lint passes
+    needs: lint
 
     services:
-      # MongoDB test service
+      # MongoDB with replica set (required for ACID transactions)
       mongodb:
-        image: mongo:7.0
+        image: mongo:7
         options: >-
-          --health-cmd mongosh
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          --entrypoint "mongod --replSet rs0 --bind_ip_all"
         ports:
           - 27017:27017
 
@@ -85,12 +84,20 @@ jobs:
       - name: Install server dependencies
         run: npm --prefix server install
 
+      - name: Initialize MongoDB replica set
+        run: |
+          sleep 5
+          docker exec $(docker ps -q) mongosh --quiet --eval 'rs.initiate({_id:"rs0",members:[{_id:0,host:"localhost:27017"}]})'
+          sleep 3
+          echo "=== Replica set status ==="
+          docker exec $(docker ps -q) mongosh --quiet --eval 'rs.status().ok'
+
       - name: Run server tests
         run: npm --prefix server run test
         env:
           NODE_ENV: test
-          MONGO_URI: mongodb://localhost:27017/restaurant-reservation-test
-          JWT_SECRET: test-secret-key
+          MONGO_URI: mongodb://localhost:27017/restaurant-reservation-test?retryWrites=true
+          JWT_SECRET: test-secret-key-for-jest
         continue-on-error: false
 
   # ============================================================================
@@ -99,7 +106,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     name: Build
-    needs: lint  # Only run build if lint passes
+    needs: lint
 
     steps:
       - name: Checkout code
