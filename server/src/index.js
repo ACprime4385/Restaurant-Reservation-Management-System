@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
+import authRoutes from './routes/auth.js';
+import { errorHandler } from './middleware/errorHandler.js';
 
 dotenv.config();
 
@@ -22,6 +24,10 @@ mongoose.connect(process.env.MONGO_URI)
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
+
+app.use('/api/auth', authRoutes);
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`✓ Server running on http://localhost:${PORT}`);
