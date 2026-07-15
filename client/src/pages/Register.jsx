@@ -28,7 +28,7 @@ export default function Register() {
 
     setLoading(true);
     try {
-      const result = await register(name, email, password);
+      await register(name, email, password);
       navigate('/');
     } catch (err) {
       setError(err.message);

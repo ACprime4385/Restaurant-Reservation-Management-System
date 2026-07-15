@@ -40,13 +40,13 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      validateToken(token);
+      validateToken();
     } else {
       setLoading(false);
     }
   }, []);
 
-  const validateToken = async (token) => {
+  const validateToken = async () => {
     try {
       const res = await apiClient.get('/auth/me');
       setUser(res.data.user);
