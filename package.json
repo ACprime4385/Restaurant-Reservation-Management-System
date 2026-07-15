@@ -1,0 +1,19 @@
+{
+  "name": "restaurant-reservation-system",
+  "version": "1.0.0",
+  "description": "Full-stack restaurant reservation management system",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"npm --prefix server run dev\" \"npm --prefix client run dev\"",
+    "build": "npm --prefix server run build && npm --prefix client run build",
+    "test": "npm --prefix server run test",
+    "lint": "npm --prefix server run lint && npm --prefix client run lint",
+    "mongo:up": "docker-compose up -d",
+    "mongo:down": "docker-compose down",
+    "seed": "npm --prefix server run seed"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
