@@ -8,13 +8,23 @@ import authRoutes from './routes/auth.js';
 import reservationRoutes from './routes/reservations.js';
 import tableRoutes from './routes/tables.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import { securityHeaders, apiLimiter, authLimiter } from './middleware/security.js';
 
 dotenv.config();
 
 const app = express();
 
-app.use(cors());
-app.use(express.json());
+app.use(cors({
+  origin: process.env.CORS_ORIGIN || '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+app.use(securityHeaders);
+app.use(express.json({ limit: '10kb' }));
+
+// Apply rate limiting
+app.use('/api', apiLimiter);
+app.use('/api/auth', authLimiter);
 
 const PORT = process.env.PORT || 5000;
 

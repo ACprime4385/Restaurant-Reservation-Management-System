@@ -13,9 +13,9 @@ export const findAvailableTables = async (date, timeSlot, numberOfGuests) => {
     date: { $gte: startOfDay, $lte: endOfDay },
     timeSlot,
     status: 'confirmed',
-  }).select('table');
+  }).select('table').lean();
 
-  const bookedTableIds = bookedTables.map(r => r.table.toString());
+  const bookedTableIds = bookedTables.map(r => r.table._id.toString());
 
   const availableTables = await Table.find({
     _id: { $nin: bookedTableIds },
@@ -72,6 +72,16 @@ export const createReservationAtomic = async (customerId, tableId, date, timeSlo
     return reservation;
   } catch (error) {
     await session.abortTransaction();
+
+    // Handle different types of booking conflicts
+    if (
+      error.code === 11000 ||
+      error.errorLabels?.includes('TransientTransactionError') ||
+      error.message?.includes('WriteConflict')
+    ) {
+      throw new Error('This table is already booked for this time slot');
+    }
+
     throw error;
   } finally {
     session.endSession();

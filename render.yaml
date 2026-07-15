@@ -1,0 +1,102 @@
+services:
+  # ============================================================================
+  # Backend Service - Express.js API
+  # ============================================================================
+  - type: web
+    name: restaurant-api
+    env: node
+    plan: free
+
+    # Source configuration
+    repo: https://github.com/YOUR_USERNAME/restaurant-reservation-system
+    branch: main
+    rootDir: server
+
+    # Build and start commands
+    buildCommand: npm install
+    startCommand: npm start
+
+    # Environment variables for production
+    envVars:
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+
+    # Health check endpoint
+    healthCheckPath: /health
+
+    # Expose internal port (Render handles routing)
+    numInstances: 1
+
+    # Auto-deploy on push to main
+    autoDeploy: true
+
+  # ============================================================================
+  # Frontend Service - React/Vite Static Site
+  # ============================================================================
+  - type: static_site
+    name: restaurant-client
+    plan: free
+
+    # Source configuration
+    repo: https://github.com/YOUR_USERNAME/restaurant-reservation-system
+    branch: main
+    rootDir: client
+
+    # Build command for Vite production build
+    buildCommand: npm install && npm run build
+
+    # Directory containing built static files
+    staticPublishPath: dist
+
+    # Environment variables (accessible in client at build time)
+    envVars:
+      # Reference the backend service URL dynamically
+      # After deploying backend, update this to: https://restaurant-api.onrender.com/api
+      - key: VITE_API_URL
+        value: https://restaurant-api.onrender.com/api
+
+    # Auto-deploy on push to main
+    autoDeploy: true
+
+    # Custom domain (optional)
+    # customDomains:
+    #   - yourdomain.com
+
+# ============================================================================
+# Render.com Deployment Notes:
+# ============================================================================
+#
+# 1. PREREQUISITES:
+#    - GitHub repository with this render.yaml in the root
+#    - MongoDB Atlas free tier cluster (see DEPLOYMENT.md)
+#    - Render.com account (sign up at render.com)
+#
+# 2. DEPLOY STEPS:
+#    - Push this file to your main branch on GitHub
+#    - In Render dashboard: New → Blueprint
+#    - Connect GitHub repo and authorize
+#    - Render auto-detects render.yaml and creates both services
+#
+# 3. ENVIRONMENT VARIABLES (Required in Render Dashboard):
+#    After deployment, add to backend service:
+#    - MONGO_URI: mongodb+srv://username:password@cluster.mongodb.net/restaurant-reservation?retryWrites=true&w=majority
+#    - JWT_SECRET: (generate a strong random string, e.g., 'openssl rand -base64 32')
+#
+# 4. CONNECT FRONTEND TO BACKEND:
+#    - Deploy backend first (wait for green "Live" status)
+#    - Note the backend URL: https://restaurant-api.onrender.com
+#    - Update VITE_API_URL in this file: https://restaurant-api.onrender.com/api
+#    - Redeploy frontend (Render auto-redeploys on render.yaml change)
+#
+# 5. VERIFICATION:
+#    - Backend health: https://restaurant-api.onrender.com/health
+#    - API docs: https://restaurant-api.onrender.com/api-docs
+#    - Frontend: https://restaurant-client.onrender.com
+#
+# ============================================================================

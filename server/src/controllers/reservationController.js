@@ -70,7 +70,7 @@ export const cancelMyReservation = async (req, res, next) => {
       return res.status(404).json({ error: 'Reservation not found' });
     }
 
-    if (reservation.customer.toString() !== req.user._id.toString()) {
+    if (reservation.customer._id.toString() !== req.user._id.toString()) {
       return res.status(403).json({ error: 'Not authorized to cancel this reservation' });
     }
 

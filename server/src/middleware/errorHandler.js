@@ -2,7 +2,7 @@ export const asyncHandler = (fn) => (req, res, next) => {
   Promise.resolve(fn(req, res, next)).catch(next);
 };
 
-export const errorHandler = (err, req, res, next) => {
+export const errorHandler = (err, req, res, _next) => {
   console.error('Error:', err);
 
   if (err.name === 'ValidationError') {
@@ -19,7 +19,7 @@ export const errorHandler = (err, req, res, next) => {
     return res.status(400).json({ error: 'Invalid ID format' });
   }
 
-  if (err.message.includes('duplicate key')) {
+  if (err.message.includes('duplicate key') || err.message === 'This table is already booked for this time slot') {
     return res.status(409).json({ error: 'This table is already booked for this time slot' });
   }
 

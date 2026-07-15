@@ -51,6 +51,11 @@ export const createTable = async (req, res, next) => {
 
 export const updateTable = async (req, res, next) => {
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
     const { capacity, status } = req.body;
 
     const table = await Table.findByIdAndUpdate(

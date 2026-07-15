@@ -1,0 +1,157 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    # Ignore documentation-only changes
+    paths-ignore:
+      - '**.md'
+      - '.gitignore'
+      - 'docs/**'
+  pull_request:
+    branches:
+      - main
+      - master
+    # Ignore documentation-only changes
+    paths-ignore:
+      - '**.md'
+      - '.gitignore'
+      - 'docs/**'
+
+jobs:
+  # ============================================================================
+  # Lint: Check code quality with ESLint
+  # ============================================================================
+  lint:
+    runs-on: ubuntu-latest
+    name: Lint (ESLint)
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+          cache: 'npm'
+
+      - name: Install root dependencies
+        run: npm install
+
+      - name: Lint server
+        run: npm --prefix server run lint
+        continue-on-error: false
+
+      - name: Lint client
+        run: npm --prefix client run lint
+        continue-on-error: false
+
+  # ============================================================================
+  # Test: Run backend tests with Jest and Supertest
+  # ============================================================================
+  test:
+    runs-on: ubuntu-latest
+    name: Test (Jest)
+    needs: lint  # Only run tests if lint passes
+
+    services:
+      # MongoDB test service
+      mongodb:
+        image: mongo:7.0
+        options: >-
+          --health-cmd mongosh
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 27017:27017
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+          cache: 'npm'
+
+      - name: Install root dependencies
+        run: npm install
+
+      - name: Install server dependencies
+        run: npm --prefix server install
+
+      - name: Run server tests
+        run: npm --prefix server run test
+        env:
+          NODE_ENV: test
+          MONGO_URI: mongodb://localhost:27017/restaurant-reservation-test
+          JWT_SECRET: test-secret-key
+        continue-on-error: false
+
+  # ============================================================================
+  # Build: Verify both backend and frontend builds complete without errors
+  # ============================================================================
+  build:
+    runs-on: ubuntu-latest
+    name: Build
+    needs: lint  # Only run build if lint passes
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+          cache: 'npm'
+
+      - name: Install root dependencies
+        run: npm install
+
+      - name: Build server
+        run: |
+          npm --prefix server install
+          npm --prefix server run build
+        continue-on-error: false
+
+      - name: Build client
+        run: |
+          npm --prefix client install
+          npm --prefix client run build
+        env:
+          VITE_API_URL: https://restaurant-api.onrender.com/api
+        continue-on-error: false
+
+      - name: Verify build outputs
+        run: |
+          if [ ! -d "client/dist" ]; then
+            echo "Error: client/dist directory not created"
+            exit 1
+          fi
+          echo "Build verification successful"
+
+  # ============================================================================
+  # Summary: Job that shows overall CI status
+  # ============================================================================
+  ci-summary:
+    runs-on: ubuntu-latest
+    name: CI Summary
+    needs: [lint, test, build]
+    if: always()
+
+    steps:
+      - name: Check CI status
+        run: |
+          if [ "${{ needs.lint.result }}" != "success" ] || \
+             [ "${{ needs.test.result }}" != "success" ] || \
+             [ "${{ needs.build.result }}" != "success" ]; then
+            echo "CI Pipeline Failed"
+            exit 1
+          fi
+          echo "✓ CI Pipeline Passed"
