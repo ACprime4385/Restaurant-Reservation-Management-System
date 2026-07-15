@@ -9,7 +9,7 @@ services:
 
     # Source configuration
     repo: https://github.com/ACprime4385/Restaurant-Reservation-Management-System
-    branch: master
+    branch: main
     rootDir: server
 
     # Build and start commands
@@ -33,7 +33,7 @@ services:
     # Expose internal port (Render handles routing)
     numInstances: 1
 
-    # Auto-deploy on push to master
+    # Auto-deploy on push to main
     autoDeploy: true
 
   # ============================================================================
@@ -45,7 +45,7 @@ services:
 
     # Source configuration
     repo: https://github.com/ACprime4385/Restaurant-Reservation-Management-System
-    branch: master
+    branch: main
     rootDir: client
 
     # Build command for Vite production build
