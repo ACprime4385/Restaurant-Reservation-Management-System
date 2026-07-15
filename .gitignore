@@ -21,6 +21,12 @@ lerna-debug.log*
 Thumbs.db
 *.stackdump
 
+# Claude AI (developer tool)
+.claude/
+
+# Misc auto-generated files
+bash.exe.stackdump
+
 # IDE
 .vscode/
 .idea/

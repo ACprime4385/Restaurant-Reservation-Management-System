@@ -447,12 +447,9 @@ restaurant-reservation-system/
 │   │   └── main.jsx                # Entry point
 │   └── package.json
 │
-├── DEPLOYMENT.md                   # Complete deployment guide
-├── BUGS_FIXED.md                   # Comprehensive bugs fixed report
-├── FEATURES.html                   # Feature list (printable PDF)
-├── INTERVIEW_QUESTIONS.html        # Interview Q&A (printable PDF)
-├── KEY_TALKING_POINTS.html         # Talking points (printable PDF)
-└── README.md                       # This file
+├── README.md                       # This file
+├── render.yaml                     # Render deployment blueprint
+└── .gitignore                      # Git ignore rules
 ```
 
 ---
