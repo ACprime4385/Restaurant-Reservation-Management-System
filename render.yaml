@@ -8,8 +8,8 @@ services:
     plan: free
 
     # Source configuration
-    repo: https://github.com/YOUR_USERNAME/restaurant-reservation-system
-    branch: main
+    repo: https://github.com/ACprime4385/Restaurant-Reservation-Management-System
+    branch: master
     rootDir: server
 
     # Build and start commands
@@ -33,7 +33,7 @@ services:
     # Expose internal port (Render handles routing)
     numInstances: 1
 
-    # Auto-deploy on push to main
+    # Auto-deploy on push to master
     autoDeploy: true
 
   # ============================================================================
@@ -44,8 +44,8 @@ services:
     plan: free
 
     # Source configuration
-    repo: https://github.com/YOUR_USERNAME/restaurant-reservation-system
-    branch: main
+    repo: https://github.com/ACprime4385/Restaurant-Reservation-Management-System
+    branch: master
     rootDir: client
 
     # Build command for Vite production build
@@ -56,12 +56,11 @@ services:
 
     # Environment variables (accessible in client at build time)
     envVars:
-      # Reference the backend service URL dynamically
       # After deploying backend, update this to: https://restaurant-api.onrender.com/api
       - key: VITE_API_URL
         value: https://restaurant-api.onrender.com/api
 
-    # Auto-deploy on push to main
+    # Auto-deploy on push to master
     autoDeploy: true
 
     # Custom domain (optional)
@@ -78,9 +77,9 @@ services:
 #    - Render.com account (sign up at render.com)
 #
 # 2. DEPLOY STEPS:
-#    - Push this file to your main branch on GitHub
+#    - Push this file to your master branch on GitHub
 #    - In Render dashboard: New → Blueprint
-#    - Connect GitHub repo and authorize
+#    - Connect your GitHub repo and authorize
 #    - Render auto-detects render.yaml and creates both services
 #
 # 3. ENVIRONMENT VARIABLES (Required in Render Dashboard):
