@@ -19,7 +19,7 @@ const reservationSchema = new mongoose.Schema(
     timeSlot: {
       type: String,
       required: [true, 'Please provide a time slot'],
-      enum: ['11:00', '12:00', '13:00', '17:00', '18:00', '19:00', '20:00', '21:00'],
+      enum: ['11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00'],
     },
     numberOfGuests: {
       type: Number,
