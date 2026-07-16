@@ -56,9 +56,9 @@ services:
 
     # Environment variables (accessible in client at build time)
     envVars:
-      # After deploying backend, update this to: https://restaurant-api.onrender.com/api
+      # Backend API URL
       - key: VITE_API_URL
-        value: https://restaurant-api.onrender.com/api
+        value: https://restaurant-api-elhr.onrender.com/api
 
     # Auto-deploy on push to master
     autoDeploy: true
@@ -89,13 +89,13 @@ services:
 #
 # 4. CONNECT FRONTEND TO BACKEND:
 #    - Deploy backend first (wait for green "Live" status)
-#    - Note the backend URL: https://restaurant-api.onrender.com
-#    - Update VITE_API_URL in this file: https://restaurant-api.onrender.com/api
+#    - Note the backend URL: https://restaurant-api-elhr.onrender.com
+#    - Update VITE_API_URL in this file: https://restaurant-api-elhr.onrender.com/api
 #    - Redeploy frontend (Render auto-redeploys on render.yaml change)
 #
 # 5. VERIFICATION:
-#    - Backend health: https://restaurant-api.onrender.com/health
-#    - API docs: https://restaurant-api.onrender.com/api-docs
-#    - Frontend: https://restaurant-client.onrender.com
+#    - Backend health: https://restaurant-api-elhr.onrender.com/health
+#    - API docs: https://restaurant-api-elhr.onrender.com/api-docs
+#    - Frontend: https://restaurant-reservation-management-system-qask.onrender.com
 #
 # ============================================================================
