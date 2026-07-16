@@ -14,6 +14,16 @@ import { securityHeaders, apiLimiter, authLimiter } from './middleware/security.
 
 dotenv.config();
 
+// 🔍 DEBUG: Log available env var names (NOT values) to help diagnose Render issues
+const nodeEnv = process.env.NODE_ENV || 'not-set';
+const hasMongoUri = process.env.MONGO_URI ? 'YES' : 'NO';
+const hasJwtSecret = process.env.JWT_SECRET ? 'YES' : 'NO';
+const portFromEnv = process.env.PORT || 'not-set';
+console.log('🔍 ENV DEBUG - NODE_ENV:', nodeEnv);
+console.log('🔍 ENV DEBUG - MONGO_URI exists:', hasMongoUri);
+console.log('🔍 ENV DEBUG - JWT_SECRET exists:', hasJwtSecret);
+console.log('🔍 ENV DEBUG - PORT:', portFromEnv);
+
 const app = express();
 
 app.use(cors({
