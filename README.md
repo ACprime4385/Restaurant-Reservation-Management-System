@@ -314,7 +314,7 @@ Full interactive API documentation is available at `/api-docs` when the server i
   customer:       { type: ObjectId, ref: 'User', required: true },
   table:          { type: ObjectId, ref: 'Table', required: true },
   date:           { type: Date, required: true },
-  timeSlot:       { type: String, enum: ['11:00','12:00','13:00','17:00','18:00','19:00','20:00','21:00'], required: true },
+  timeSlot:       { type: String, enum: ['11:00','11:30','12:00','12:30','13:00','13:30','14:00','17:00','17:30','18:00','18:30','19:00','19:30','20:00','20:30','21:00'], required: true },
   numberOfGuests: { type: Number, required: true, min: 1, max: 20 },
   status:         { type: String, enum: ['confirmed', 'cancelled'], default: 'confirmed' },
   notes:          { type: String, maxlength: 500, default: '' }
@@ -456,6 +456,14 @@ restaurant-reservation-system/
 
 **Stack:** React 18 | Vite 5 | Tailwind CSS 3 | Node.js | Express 4 | MongoDB 7 | Mongoose 8 | JWT | bcrypt | Jest 29 | Supertest | Helmet
 
-**Status:** ✅ Production Ready | **Tests:** 176 (99.1% passing) | **Coverage:** 80%+ global, 90%+ booking service | **ESLint:** 0 errors, 0 warnings
+**Status:** ✅ Production Ready | **Tests:** 176 | **Coverage:** 80%+ global, 90%+ booking service | **ESLint:** 0 errors, 0 warnings
 
-**Submitted:** July 15, 2026 — Full-Stack Developer Assignment
+## Live Deployment
+
+| Service | URL |
+|---------|-----|
+| **Frontend** | [https://restaurant-reservation-management-system-qask.onrender.com](https://restaurant-reservation-management-system-qask.onrender.com) |
+| **Backend API** | [https://restaurant-api-elhr.onrender.com](https://restaurant-api-elhr.onrender.com) |
+| **API Docs (Swagger)** | [https://restaurant-api-elhr.onrender.com/api-docs](https://restaurant-api-elhr.onrender.com/api-docs) |
+
+**Submitted:** July 16, 2026 — Full-Stack Developer Assignment
